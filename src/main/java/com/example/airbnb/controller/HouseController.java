@@ -46,7 +46,7 @@ public class HouseController {
         String fileName = file.getOriginalFilename();
         house.setImage(fileName);
         try {
-            file.transferTo(new File("/Users/tranquanghuy/Desktop/CODEGYM-BaiTapNew/SpringMVC/quanlymuaban/src/main/resources/templates/image/" + fileName));
+            file.transferTo(new File("/Users/tranquanghuy/Desktop/CODEGYM-BaiTapNew/SpringMVC/jwtSpringBoot/src/main/resources/templates/image/" + fileName));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
@@ -60,7 +60,7 @@ public class HouseController {
         if(fileName.equals("")){
             house.setImage(houseService.findById(id).get().getImage());
             try {
-                file.transferTo(new File("/Users/tranquanghuy/Desktop/CODEGYM-BaiTapNew/SpringMVC/quanlymuaban/src/main/resources/templates/image/" +house.getImage()));
+                file.transferTo(new File("/Users/tranquanghuy/Desktop/CODEGYM-BaiTapNew/SpringMVC/jwtSpringBoot/src/main/resources/templates/image/" +house.getImage()));
             }catch (IOException e){
                 return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
             }

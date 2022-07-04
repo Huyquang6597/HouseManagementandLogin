@@ -60,7 +60,8 @@
             </nav>
         </div>
     </div>
-    <div id="content"></div>
+        <div id="content"></div>
+
     <div class="row">
         <div class="col-9">
 
@@ -240,9 +241,12 @@
     loadData(0)
 
     function loadData(number) {
-
+        console.log(localStorage.getItem('token'))
         $.ajax({
             type: "GET",
+            headers:{
+                Authorization: 'Bearer' + localStorage.getItem('token')
+            },
             url: "http://localhost:8083/houses?page=" + number,
             success: function (list) {
                 console.log(list)
@@ -275,8 +279,8 @@
                     <td>${list[i].numberOfBedroom}</td>
                     <td>${list[i].pricePerDay}</td>
                     <td><img src="image/${list[i].image}" height="100px" width="100px"></td>
-                    <td><button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal1" onclick="showEditForm(${data[i].id})">Edit</button></td>
-<!--                    <td><button class="btn btn-primary" onclick="showDeleteForm1(${data[i].id})">Delete</button></td>-->
+                    <td><button class="btn btn-primary" data-toggle="modal" data-target="#exampleModal1" onclick="showEditForm(${list[i].id})">Edit</button></td>
+                    <td><button class="btn btn-primary" onclick="showDeleteForm1(${list[i].id})">Delete</button></td>
                 </tr>`
         }
         tbody.innerHTML = str;
@@ -298,19 +302,17 @@
         $('#exampleModal').modal('show');
     }
 
-    function showRegisterForm() {
-        $('#registerModal').modal('show')
-    }
+
 
 
     function save1() {
-        let data = new FormData(addForm);
+        let formData = new FormData(addForm);
 
         $.ajax({
             type: "POST",
             enctype: 'multipart/form-data',
             url: "http://localhost:8083/houses",
-            data: data,
+            data: formData,
             processData: false,
             contentType: false,
             cache: false,
@@ -373,6 +375,11 @@
         })
     }
 
+
+    function showRegisterForm() {
+        $('#registerModal').modal('show')
+    }
+
         function register() {
         let username = document.getElementById("username").value;
         let password = document.getElementById("password").value;
@@ -424,11 +431,13 @@
             url: "http://localhost:8083/login",
             data: JSON.stringify(user),
             success: function (data) {
+                localStorage.setItem('token', data.accessToken); // xét token trong locale storage
                 console.log(data)
                 token = data.accessToken
                 $('#exampleModal3').modal('hide');
                 login.reset()
                 currentUser(token)
+                loadData(0)
             },
             error: function (error) {
                 console.log(error)
@@ -447,7 +456,7 @@
                 Authorization: 'Bearer ' + token
             },
             type: "GET",
-            url: "http://localhost:8083 /users",
+            url: "http://localhost:8083/users",
             success: function (data) {
                 console.log(data)
                 writeUser(data)
